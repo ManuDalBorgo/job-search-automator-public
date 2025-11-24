@@ -1,0 +1,12 @@
+beautifulsoup4          # For web scraping HTML content
+requests                # For making HTTP API calls
+groq                    # For AI text generation (LLM)
+pandas                  # For data manipulation and Excel export
+openpyxl                # For writing Excel (.xlsx) files
+pymupdf                 # For extracting text from PDF CVs
+google-search-results   # SerpApi client for Google Jobs search
+
+# Fallback API providers (optional but recommended)
+openai                  # For OpenRouter API compatibility
+together                # For Together AI API
+huggingface_hub         # For Hugging Face Inference API
