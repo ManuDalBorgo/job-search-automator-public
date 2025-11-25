@@ -40,7 +40,7 @@ Extract text from your CV PDF for processing by AI tools.
 
 ```bash
 # Extract text from CV (saves to extracted_cvs/ folder)
-python3 scripts/extract_cv.py
+python3 scripts/01_extract_cv.py
 ```
 
 **What it does:**
@@ -59,7 +59,7 @@ Create AI-powered, CV-specific job search configurations.
 
 ```bash
 # Generate configs for all CVs in cvs/ folder
-python3 scripts/generate_cv_configs.py
+python3 scripts/02_generate_cv_configs.py
 ```
 
 **What it does:**
@@ -271,23 +271,23 @@ Here's a complete example for a new CV:
 cp ~/Desktop/my_cv.pdf cvs/
 
 # 2. Extract text from CV
-python3 scripts/extract_cv.py
+python3 scripts/01_extract_cv.py
 
 # 3. Generate CV-specific configuration
-python3 scripts/generate_cv_configs.py
+python3 scripts/02_generate_cv_configs.py
 
 # 4. Search for jobs using CV config
 python3 scripts/search_jobs.py --cv "my_cv"
 
 # 5. Generate personalized emails
-python3 scripts/generate_emails.py my_cv
+python3 scripts/07_generate_cover_letters.py my_cv
 
 # 6. Export everything to Excel
-python3 scripts/export_to_excel.py
+python3 scripts/08_export_to_excel.py
 
 # 7. Review results
 open runs_export.xlsx
-ls runs/my_cv_*/generated_emails/
+ls runs/my_cv_*/generated_cover_letters/
 ```
 
 ---
@@ -297,13 +297,13 @@ ls runs/my_cv_*/generated_emails/
 #### List All Runs
 ```bash
 # Show all CV runs with statistics
-python3 scripts/list_runs.py
+python3 scripts/10_list_runs.py
 ```
 
 #### Migrate Old Data
 ```bash
 # Migrate old data to new structure
-python3 scripts/migrate_to_runs.py <cv_name>
+python3 scripts/11_migrate_to_runs.py <cv_name>
 ```
 
 ---
@@ -334,6 +334,8 @@ python3 scripts/migrate_to_runs.py <cv_name>
 
 ```
 job_search_automator/
+├── setup_all_model_apis.sh           # Setup script for all API keys
+├── GETTING_STARTED.md                # Step-by-step getting started guide
 ├── scripts/                          # All executable scripts
 │   ├── 01_extract_cv.py                # Extract CV text
 │   ├── 02_generate_cv_configs.py       # Generate CV-specific configs
@@ -346,8 +348,8 @@ job_search_automator/
 │   ├── 09_create_final_excel.py        # Create final Excel report
 │   ├── 10_list_runs.py                 # List all CV runs
 │   ├── 11_migrate_to_runs.py           # Migrate old data
-│   ├── generate_email_prompt.py        # Email prompt generator
-│   └── extract_cv.py                   # CV text extraction
+│   ├── generate_cover_letter_prompt.py # Cover letter prompt generator
+│   └── extract_cv.py                   # CV text extraction (legacy)
 │
 ├── runs/                            # All CV runs (organized by CV)
 │   └── <cv_name_timestamp>/
@@ -355,7 +357,7 @@ job_search_automator/
 │       ├── run_metadata.json        # Run statistics
 │       ├── jobs/
 │       │   └── jobs.csv            # Job listings
-│       ├── generated_emails/        # Email drafts
+│       ├── generated_cover_letters/ # Cover letter drafts
 │       ├── ai_prompts/             # AI prompts used
 │       └── logs/                   # Detailed logs
 │
@@ -379,16 +381,16 @@ job_search_automator/
 
 ```bash
 # 1. Search for jobs (optional - or use existing jobs.csv)
-python3 scripts/1_search_jobs.py "Your Job Title" "Another Job Title"
+python3 scripts/04_search_jobs.py "Your Job Title" "Another Job Title"
 
 # 2. Create a new CV run and generate emails
-python3 scripts/2_generate_emails.py my_cv_name
+python3 scripts/07_generate_cover_letters.py my_cv_name
 
 # 3. Review generated emails
-ls runs/my_cv_name_*/generated_emails/
+ls runs/my_cv_name_*/generated_cover_letters/
 
 # 4. Export to Excel for analysis
-python3 scripts/3_export_to_excel.py
+python3 scripts/08_export_to_excel.py
 
 # 5. Open Excel file
 open runs_export.xlsx
@@ -452,16 +454,16 @@ Step 3: REFINE     → Gemini refines based on feedback (if needed)
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `list_runs.py` | List all CV runs with stats | `python3 scripts/list_runs.py` |
-| `migrate_to_runs.py` | Migrate old data to new structure | `python3 scripts/migrate_to_runs.py <cv_name>` |
+| `10_list_runs.py` | List all CV runs with stats | `python3 scripts/10_list_runs.py` |
+| `11_migrate_to_runs.py` | Migrate old data to new structure | `python3 scripts/11_migrate_to_runs.py <cv_name>` |
 
 ### Supporting Modules
 
 | Module | Purpose |
 |--------|---------|
-| `run_manager.py` | Manages CV runs, folders, and logging |
-| `generate_email_prompt.py` | Generates AI prompts for emails |
-| `extract_cv.py` | Extracts text from PDF CVs |
+| `06_run_manager.py` | Manages CV runs, folders, and logging |
+| `generate_cover_letter_prompt.py` | Generates AI prompts for cover letters |
+| `01_extract_cv.py` | Extracts text from PDF CVs |
 
 ## 🔧 Configuration
 
@@ -496,9 +498,9 @@ Run `python3 scripts/list_runs.py` to see all your CV runs and statistics.
 
 | Issue | Solution |
 |-------|----------|
-| "No runs found" | Create new run: `python3 scripts/2_generate_emails.py <cv_name>` |
+| "No runs found" | Create new run: `python3 scripts/07_generate_cover_letters.py <cv_name>` |
 | "API quota exceeded" | Wait 24 hours or use different Gemini model |
-| "jobs.csv not found" | Run `scripts/1_search_jobs.py` first or copy jobs.csv to run folder |
+| "jobs.csv not found" | Run `scripts/04_search_jobs.py` first or copy jobs.csv to run folder |
 | Import errors | Activate venv: `source venv/bin/activate` |
 
 ## 📚 Documentation
@@ -513,19 +515,20 @@ Run `python3 scripts/list_runs.py` to see all your CV runs and statistics.
 
 ```bash
 # Data Scientist CV
-python3 scripts/2_generate_emails.py data_scientist_cv
+# Data Scientist CV
+python3 scripts/07_generate_cover_letters.py data_scientist_cv
 
 # Software Engineer CV
-python3 scripts/2_generate_emails.py software_engineer_cv
+python3 scripts/07_generate_cover_letters.py software_engineer_cv
 
 # Product Manager CV
-python3 scripts/2_generate_emails.py product_manager_cv
+python3 scripts/07_generate_cover_letters.py product_manager_cv
 
 # List all runs
-python3 scripts/list_runs.py
+python3 scripts/10_list_runs.py
 
 # Export everything
-python3 scripts/3_export_to_excel.py
+python3 scripts/08_export_to_excel.py
 ```
 
 ## ⚠️ Important Notes
@@ -540,7 +543,7 @@ python3 scripts/3_export_to_excel.py
 If you have old data (jobs.csv, generated_emails, etc.):
 
 ```bash
-python3 scripts/migrate_to_runs.py <cv_name>
+python3 scripts/11_migrate_to_runs.py <cv_name>
 ```
 
 This will move all old data into the new organized structure.
